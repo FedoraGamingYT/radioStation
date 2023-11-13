@@ -1,0 +1,56 @@
+/* fond (compatible uniqument avec les navigateur récent) */
+body {
+   background: url('/img/defaultArt.webp') no-repeat center center fixed;
+   -webkit-background-size: cover;
+   -moz-background-size: cover;
+   -o-background-size: cover;
+   background-size: cover;
+}
+
+/* Theme sombre ou clair */
+@media (prefers-color-scheme: dark) {
+   body {
+      backdrop-filter: blur(30px) contrast(30%) brightness(90%);
+   }
+}
+
+@media (prefers-color-scheme: light) {
+   body {
+      backdrop-filter: blur(30px) contrast(30%) brightness(170%);
+   }
+}
+
+/* Animation transition */
+.animated {
+   -webkit-animation-duration: 1s;
+   animation-duration: 1s;
+   -webkit-animation-fill-mode: both;
+   animation-fill-mode: both;
+}
+
+@-webkit-keyframes fadeIn {
+   0% {
+      opacity: 0;
+   }
+
+   100% {
+      opacity: 1;
+   }
+}
+
+@keyframes fadeIn {
+   0% {
+      opacity: 0;
+   }
+
+   100% {
+      opacity: 1;
+   }
+}
+
+.fadeIn {
+   -webkit-backface-visibility: visible !important;
+   -webkit-animation-name: fadeIn;
+   backface-visibility: visible !important;
+   animation-name: fadeIn;
+}
