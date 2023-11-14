@@ -2,7 +2,7 @@
 if (window.location.protocol === "https:") {
   window.location.href = "http://" + window.location.host + window.location.pathname;
 }
-
+let loading = false;
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
         navigator.serviceWorker
@@ -160,31 +160,26 @@ function updateCoverArtUsingLastfm(song, artist) {
 }
 
 function getStreamingDataIcecast() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            var icecastStatus = JSON.parse(this.responseText);
+  fetch('https://wrd.spaceworks.ovh/radio-data')
+    .then(response => response.json())
+    .then(data => {
+      var page = new Page();
 
-            // Assuming the Icecast server provides information about the current playing track
-            var currentTrack = icecastStatus.icestats.source.title;
+      // Assuming the Icecast server response includes the current playing track information
+      var title = data.icestats.source.title;
+      var [artist, song] = title.split(" - "); 
 
-            var page = new Page();
+      // Change the title
+      document.title = song + ' - ' + artist + ' | ' + RADIO_NAME;
 
-            // Assuming the Icecast server response includes the current playing track information
-            var [song, artist] = parseIcecastTrackInfo(currentTrack);
+      // Update cover art using Last.fm API
+      updateCoverArtUsingLastfm(song, artist);
 
-            // Change the title
-            document.title = song + ' - ' + artist + ' | ' + RADIO_NAME;
-
-            // Update cover art using Last.fm API
-            updateCoverArtUsingLastfm(song, artist);
-
-            page.refreshCurrentSong(song, artist);
-        }
-    };
-
-    xhttp.open('GET', 'http://wrd.spaceworks.ovh:8000/status-json.xsl', true);
-    xhttp.send();
+      page.refreshCurrentSong(song, artist);
+    })
+    .catch(error => {
+      console.log('An error occurred while fetching streaming data:', error);
+    });
 }
 
 // Function to parse the Icecast track information
@@ -200,10 +195,22 @@ function getStreamingData() {
 }
 
 function togglePlay() {
-    if (!audio.paused) {
-        audio.pause();
-    } else {
-        audio.load();
-        audio.play();
-    }
+  if (!audio.paused) {
+    audio.pause();
+  } else {
+    loading = true;
+    audio.load();
+    
+    // Update DOM to show loading
+    document.getElementById("title").innerText = "Loading...";
+    
+    audio.addEventListener("canplay", () => {
+      loading = false;
+      
+      // Update DOM after loading
+      document.getElementById("title").innerText = currentSong;  
+      
+      audio.play();
+    });
+  }
 }
