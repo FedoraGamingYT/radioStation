@@ -138,47 +138,33 @@ audio.onpause = function () {
     }
 }
 
-function getStreamingData() {
+function getStreamingDataIcecast() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-
         if (this.readyState === 4 && this.status === 200) {
-            if (this.response.length === 0) {
-                console.log('%cdebug', 'font-size: 22px')
-            }
+            var icecastStatus = JSON.parse(this.responseText);
 
-            var data = JSON.parse(this.responseText);
-
-            var page = new Page();
-
-            var currentSongElement = document.getElementById('title').innerHTML.replace(/&apos;/g, '\'');
-            let currentSongEl = currentSongElement.replace(/&amp;/g, '&');
-
-            // Formating characters to UTF-8
-            let song = (data.title ?? "").replace(/&apos;/g, '\'');
-            let currentSong = song.replace(/&amp;/g, '&');
-
-            let artist = (data.artist ?? "").replace(/&apos;/g, '\'');
-            let currentArtist = artist.replace(/&amp;/g, '&');
-            currentArtist = currentArtist.replace('  ', ' ');
-
-            // Change the title
-            document.title = currentSong + ' - ' + currentArtist + ' | ' + RADIO_NAME;
-
-            if (currentSongEl.trim() !== currentSong.trim()) {
-                page.refreshCover(currentSong, currentArtist);
-                page.refreshCurrentSong(currentSong, currentArtist);
+            // Assuming the Icecast server returns a status indicating whether it's streaming or not
+            if (icecastStatus && icecastStatus.streamedSeconds > 0) {
+                // Icecast is streaming
+                var page = new Page();
+                page.refreshCover("Default Song", "Default Artist");
+                page.refreshCurrentSong("Default Song", "Default Artist");
+            } else {
+                // Icecast is not streaming
+                console.log("Icecast is not streaming");
             }
         }
     };
 
-    //var d = new Date();
-
-    // Requisition with timestamp to prevent cache on mobile devices
-    xhttp.open('GET', 'https://api.radioking.io/widget/radio/' + RADIO_ID + '/track/current', true);
+    xhttp.open('GET', 'http://wrd.spaceworks.ovh:8000/status-json.xsl', true);
     xhttp.send();
 }
 
+function getStreamingData() {
+    // Replace the function call with the Icecast-specific function
+    getStreamingDataIcecast();
+}
 
 function togglePlay() {
     if (!audio.paused) {
