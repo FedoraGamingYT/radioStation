@@ -1,7 +1,3 @@
-// Check if the protocol is HTTPS and redirect to HTTP
-if (window.location.protocol === "https:") {
-  window.location.href = "http://" + window.location.host + window.location.pathname;
-}
 let loading = false;
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
