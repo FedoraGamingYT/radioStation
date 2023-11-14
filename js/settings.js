@@ -6,7 +6,7 @@ var settings = {
     'radio_name': 'Hit Music Radio',
 
     // URL du flux, eg: https://www.radioking.com/play/IDRADIO
-    'url_streaming': 'http://wrd.spaceworks.ovh:8000/radio',
+    'url_streaming': 'https://wrd.spaceworks.ovh/radio',
 
     //ID de la radio.
     'radio_id': 'HMRadio',
