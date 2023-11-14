@@ -132,25 +132,32 @@ function updateCoverArtUsingLastfm(song, artist) {
 
     function updateCoverArt(artworkUrl) {
         var coverArt = document.getElementById('albumArt');
-        document.getElementsByTagName('body')[0].style.background = 'url(' + artworkUrl + ') no-repeat center center fixed';
-        document.getElementsByTagName('body')[0].style.backgroundSize = 'cover';
-        coverArt.src = artworkUrl;
 
-        coverArt.className = 'img-fluid rounded mx-auto d-block animated fadeIn';
+        // Check if the song or artist has changed before updating
+        if (coverArt.getAttribute('data-song') !== song || coverArt.getAttribute('data-artist') !== artist) {
+            document.getElementsByTagName('body')[0].style.background = 'url(' + artworkUrl + ') no-repeat center center fixed';
+            document.getElementsByTagName('body')[0].style.backgroundSize = 'cover';
+            coverArt.src = artworkUrl;
 
-        setTimeout(function () {
-            coverArt.className = 'img-fluid rounded mx-auto d-block';
-        }, 2000);
+            coverArt.className = 'img-fluid rounded mx-auto d-block animated fadeIn';
 
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: song,
-                artist: artist,
-                artwork: [{
-                    src: artworkUrl,
-                    type: 'image/png'
-                }]
-            });
+            setTimeout(function () {
+                coverArt.className = 'img-fluid rounded mx-auto d-block';
+            }, 2000);
+
+            coverArt.setAttribute('data-song', song);
+            coverArt.setAttribute('data-artist', artist);
+
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: song,
+                    artist: artist,
+                    artwork: [{
+                        src: artworkUrl,
+                        type: 'image/png'
+                    }]
+                });
+            }
         }
     }
 }
