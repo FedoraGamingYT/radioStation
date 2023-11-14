@@ -202,10 +202,6 @@ function togglePlay() {
     
     audio.addEventListener("canplay", () => {
       loading = false;
-      
-      // Update DOM after loading
-      document.getElementById("title").innerText = currentSong;  
-      
       audio.play();
     });
   }
