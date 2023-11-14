@@ -144,21 +144,31 @@ function getStreamingDataIcecast() {
         if (this.readyState === 4 && this.status === 200) {
             var icecastStatus = JSON.parse(this.responseText);
 
-            // Assuming the Icecast server returns a status indicating whether it's streaming or not
-            if (icecastStatus && icecastStatus.streamedSeconds > 0) {
-                // Icecast is streaming
-                var page = new Page();
-                page.refreshCover("Default Song", "Default Artist");
-                page.refreshCurrentSong("Default Song", "Default Artist");
-            } else {
-                // Icecast is not streaming
-                console.log("Icecast is not streaming");
-            }
+            // Assuming the Icecast server provides information about the current playing track
+            var currentTrack = icecastStatus.icestats.source.title;
+
+            var page = new Page();
+
+            // Assuming the Icecast server response includes the current playing track information
+            var [song, artist] = parseIcecastTrackInfo(currentTrack);
+
+            // Change the title
+            document.title = song + ' - ' + artist + ' | ' + RADIO_NAME;
+
+            page.refreshCover(song, artist);
+            page.refreshCurrentSong(song, artist);
         }
     };
 
     xhttp.open('GET', 'http://wrd.spaceworks.ovh:8000/status-json.xsl', true);
     xhttp.send();
+}
+
+// Function to parse the Icecast track information
+function parseIcecastTrackInfo(trackInfo) {
+    // Assuming the track information is formatted as "Artist - Song"
+    var [artist, song] = trackInfo.split(' - ');
+    return [song, artist];
 }
 
 function getStreamingData() {
