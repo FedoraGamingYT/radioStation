@@ -138,6 +138,58 @@ audio.onpause = function () {
     }
 }
 
+function updateCoverArtUsingLastfm(song, artist) {
+    // Default cover art
+    var urlCoverArt = DEFAULT_COVER_ART;
+
+    // Use Last.fm API to get album art
+    var lastFmApiKey = '11e52cd83406ff9c727142e9606a0132'; // Replace with your Last.fm API key
+    var lastFmApiUrl = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${lastFmApiKey}&artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(song)}&format=json`;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            var data = JSON.parse(this.responseText);
+
+            if (data.track && data.track.album && data.track.album.image) {
+                // Use the largest available image from Last.fm
+                var artworkUrl = data.track.album.image.find(img => img.size === 'extralarge')['#text'];
+                updateCoverArt(artworkUrl);
+            } else {
+                // Use default cover art if no information is available
+                updateCoverArt(urlCoverArt);
+            }
+        }
+    };
+
+    xhttp.open('GET', lastFmApiUrl, true);
+    xhttp.send();
+
+    function updateCoverArt(artworkUrl) {
+        var coverArt = document.getElementById('albumArt');
+        document.getElementsByTagName('body')[0].style.background = 'url(' + artworkUrl + ') no-repeat center center fixed';
+        document.getElementsByTagName('body')[0].style.backgroundSize = 'cover';
+        coverArt.src = artworkUrl;
+
+        coverArt.className = 'img-fluid rounded mx-auto d-block animated fadeIn';
+
+        setTimeout(function () {
+            coverArt.className = 'img-fluid rounded mx-auto d-block';
+        }, 2000);
+
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: song,
+                artist: artist,
+                artwork: [{
+                    src: artworkUrl,
+                    type: 'image/png'
+                }]
+            });
+        }
+    }
+}
+
 function getStreamingDataIcecast() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -155,7 +207,9 @@ function getStreamingDataIcecast() {
             // Change the title
             document.title = song + ' - ' + artist + ' | ' + RADIO_NAME;
 
-            page.refreshCover(song, artist);
+            // Update cover art using Last.fm API
+            updateCoverArtUsingLastfm(song, artist);
+
             page.refreshCurrentSong(song, artist);
         }
     };
