@@ -107,7 +107,7 @@ function updateCoverArtUsingLastfm(song, artist) {
     var mainArtist = artists[0].trim(); // Use the first artist for simplicity
 
     // Use Last.fm API to get album art
-    var lastFmApiKey = 'YOUR_LASTFM_API_KEY'; // Replace with your Last.fm API key
+    var lastFmApiKey = '11e52cd83406ff9c727142e9606a0132'; // Replace with your Last.fm API key
     var lastFmApiUrl = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${lastFmApiKey}&artist=${encodeURIComponent(mainArtist)}&track=${encodeURIComponent(song)}&format=json`;
 
     var xhttp = new XMLHttpRequest();
