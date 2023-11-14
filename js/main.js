@@ -50,15 +50,15 @@ function Page() {
     this.refreshCurrentSong = function (song, artist) {
         var currentSong = document.getElementById('title');
         var currentArtist = document.getElementById('album');
-
-        if (song !== currentSong.innerHTML) {
+    
+        if (song !== currentSong.innerHTML || artist !== currentArtist.innerHTML) {
             // Animate transition
             currentSong.className = 'animated fadeIn text-uppercase';
             currentSong.innerHTML = song;
-
+    
             currentArtist.className = 'animated fadeIn text-capitalize';
             currentArtist.innerHTML = artist;
-
+    
             // Remove animation classes
             setTimeout(function () {
                 currentSong.className = 'text-uppercase';
