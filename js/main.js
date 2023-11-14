@@ -178,7 +178,7 @@ function getStreamingDataIcecast() {
         }
     };
 
-    xhttp.open('GET', 'http://wrd.spaceworks.ovh:8000/status-json.xsl', true);
+    xhttp.open('GET', 'https://wrd.spaceworks.ovh/status-json', true);
     xhttp.send();
 }
 
