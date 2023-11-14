@@ -65,46 +65,6 @@ function Page() {
             }, 2000);
         }
     }
-
-    this.refreshCover = function (song = '', artist) {
-        // Default cover art
-        var urlCoverArt = DEFAULT_COVER_ART;
-
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            var coverArt = document.getElementById('albumArt');
-
-            // Get cover art URL
-            if (this.readyState === 4 && this.status === 200) {
-                var data = JSON.parse(this.responseText);
-                var artworkUrl = data.cover ?? urlCoverArt;
-
-                //coverArt.style.backgroundImage = 'url(' + artworkUrl + ')';
-                document.getElementsByTagName('body')[0].style.background = 'url('+ artworkUrl +') no-repeat center center fixed'
-                document.getElementsByTagName('body')[0].style.backgroundSize = "cover";
-                coverArt.src = artworkUrl;
-
-                coverArt.className = 'img-fluid rounded mx-auto d-block animated fadeIn';
-
-                setTimeout(function () {
-                    coverArt.className = 'img-fluid rounded mx-auto d-block';
-                }, 2000);
-
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({
-                        title: song,
-                        artist: artist,
-                        artwork: [{
-                            src: artworkUrl,
-                            type: 'image/png'
-                        }]
-                    });
-                }
-            }
-        }
-        xhttp.open('GET', 'http://wrd.spaceworks.ovh:8000/radio', true);
-        xhttp.send();
-    }
 }
 
 var audio = new Audio(URL_STREAMING);
