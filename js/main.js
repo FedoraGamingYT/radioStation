@@ -102,7 +102,7 @@ function Page() {
                 }
             }
         }
-        xhttp.open('GET', 'https://api.radioking.io/widget/radio/' + RADIO_ID + '/track/current', true);
+        xhttp.open('GET', 'http://wrd.spaceworks.ovh:8000/radio', true);
         xhttp.send();
     }
 }
