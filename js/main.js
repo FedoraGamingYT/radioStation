@@ -160,7 +160,7 @@ function updateCoverArtUsingLastfm(song, artist) {
 }
 
 function getStreamingDataIcecast() {
-  fetch('https://wrd.spaceworks.ovh/radio-data')
+  fetch('https://wrd.spaceworks.ovh/radio-data') // New method
     .then(response => response.json())
     .then(data => {
       var page = new Page();
